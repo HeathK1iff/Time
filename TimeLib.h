@@ -136,7 +136,8 @@ void    setSyncInterval(time_t interval); // set the number of seconds between r
 
 /* low level functions to convert to and from system time                     */
 void breakTime(time_t time, tmElements_t &tm);  // break time_t into elements
-time_t makeTime(const tmElements_t &tm);  // convert time elements into time_t
+time_t makeTime(uint8_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t min, uint8_t sec, bool useShiftDay = true);
+time_t makeTime(const tmElements_t &tm, bool useShiftDay = true);  // convert time elements into time_t
 
 } // extern "C++"
 #endif // __cplusplus
