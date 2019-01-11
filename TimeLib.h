@@ -70,6 +70,7 @@ typedef time_t(*getExternalTime)();
 #define DAYS_PER_WEEK ((time_t)(7UL))
 #define SECS_PER_WEEK ((time_t)(SECS_PER_DAY * DAYS_PER_WEEK))
 #define SECS_PER_YEAR ((time_t)(SECS_PER_DAY * 365UL)) // TODO: ought to handle leap years
+#define MONTH_PER_YEAR 12
 #define SECS_YR_2000  ((time_t)(946684800UL)) // the time at the start of y2k
  
 /* Useful Macros for getting elapsed time */
@@ -83,6 +84,13 @@ typedef time_t(*getExternalTime)();
 // Always set the correct time before settting alarms
 #define previousMidnight(_time_) (((_time_) / SECS_PER_DAY) * SECS_PER_DAY)  // time at the start of the given day
 #define nextMidnight(_time_) (previousMidnight(_time_)  + SECS_PER_DAY)   // time at the end of the given day 
+
+#define previousHour(_time_) (((_time_) / SECS_PER_HOUR) * SECS_PER_HOUR)
+#define nextHour(_time_) (previousHour(_time_) + SECS_PER_HOUR)
+
+#define previousMinute(_time_) (((_time_) / SECS_PER_MIN) * SECS_PER_MIN)
+#define nextMinute(_time_) (previousMinute(_time_) + SECS_PER_MIN)
+
 #define elapsedSecsThisWeek(_time_) (elapsedSecsToday(_time_) +  ((dayOfWeek(_time_)-1) * SECS_PER_DAY))   // note that week starts on day 1
 #define previousSunday(_time_) ((_time_) - elapsedSecsThisWeek(_time_))      // time at the start of the week for the given time
 #define nextSunday(_time_) (previousSunday(_time_)+SECS_PER_WEEK)          // time at the end of the week for the given time
@@ -136,8 +144,14 @@ void    setSyncInterval(time_t interval); // set the number of seconds between r
 
 /* low level functions to convert to and from system time                     */
 void breakTime(time_t time, tmElements_t &tm);  // break time_t into elements
-time_t makeTime(uint8_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t min, uint8_t sec, bool useShiftDay = true);
-time_t makeTime(const tmElements_t &tm, bool useShiftDay = true);  // convert time elements into time_t
+time_t makeTime(uint8_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t min, uint8_t sec);
+time_t makeTime(const tmElements_t &tm);  // convert time elements into time_t
+
+time_t startOfMonth(time_t tm);
+time_t endOfMonth(time_t tm);
+time_t startOfYear(time_t tm);
+time_t endOfYear(time_t tm);
+
 
 } // extern "C++"
 #endif // __cplusplus

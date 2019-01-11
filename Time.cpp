@@ -202,7 +202,7 @@ void breakTime(time_t timeInput, tmElements_t &tm){
 }
 
 
-time_t makeTime(uint8_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t min, uint8_t sec, bool useShiftDay = true){   
+time_t makeTime(uint8_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t min, uint8_t sec){   
 // assemble time elements into time_t 
 // note year argument is offset from 1970 (see macros in time.h to convert to other formats)
 // previous version used full four digit year (or digits since 2000),i.e. 2009 was 2009 or 9
@@ -226,11 +226,9 @@ time_t makeTime(uint8_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t 
       seconds += SECS_PER_DAY * monthDays[i-1];  //monthDay array starts from 0
     }
   }
-  if (useShiftDay){
-	seconds+= (day-1) * SECS_PER_DAY;
-  } else {
-	seconds+= day * SECS_PER_DAY;
-  }
+  if (day > 0)
+    seconds+= (day-1) * SECS_PER_DAY;
+
   seconds+= hour * SECS_PER_HOUR;
   seconds+= min * SECS_PER_MIN;
   seconds+= sec;
@@ -238,8 +236,8 @@ time_t makeTime(uint8_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t 
 }
 
 
-time_t makeTime(const tmElements_t &tm, bool useShiftDay = true){   
-  return makeTime(tm.Year, tm.Month, tm.Day, tm.Hour, tm.Minute, tm.Second, useShiftDay);
+time_t makeTime(const tmElements_t &tm){   
+  return makeTime(tm.Year, tm.Month, tm.Day, tm.Hour, tm.Minute, tm.Second);
 }
 
 
@@ -332,3 +330,45 @@ void setSyncInterval(time_t interval){ // set the number of seconds between re-s
   syncInterval = (uint32_t)interval;
   nextSyncTime = sysTime + syncInterval;
 }
+
+time_t startOfMonth(time_t tm) {
+  uint32_t result = startOfYear(tm);
+  bool isLeapYear = LEAP_YEAR(tm / SECS_PER_YEAR);
+  
+  uint32_t monthSecs = 0;
+  for (uint8_t i = 1; i <= MONTH_PER_YEAR; i++) {
+    if ((i == 2) && isLeapYear) { 
+      monthSecs += SECS_PER_DAY * 29;
+    } else {
+      monthSecs += SECS_PER_DAY * monthDays[i-1];
+    }
+	
+    if (result + monthSecs > tm)
+      break;
+    
+    result += monthSecs; 				
+  }
+  
+  return result;
+}
+
+time_t endOfMonth(time_t tm) {
+  return startOfMonth(tm) + monthDays[month(tm)-1] * SECS_PER_DAY;
+}
+
+time_t startOfYear(time_t tm){
+  uint8_t year = tm / SECS_PER_YEAR;
+  uint32_t result = year *(SECS_PER_DAY * 365);
+  for (uint8_t i = 0; i < year; i++) {
+    if (LEAP_YEAR(i)) {
+      result +=  SECS_PER_DAY;
+    }
+  }  
+  return result;
+}
+
+time_t endOfYear(time_t tm) {
+  return startOfYear(tm) + (LEAP_YEAR(tm / SECS_PER_YEAR) ? 366 : 365) * SECS_PER_DAY;
+}
+  
+
