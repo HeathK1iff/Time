@@ -12,6 +12,8 @@
 #define _Time_h
 
 #include <inttypes.h>
+#include "Schedule.h"
+
 #ifndef __AVR__
 #include <sys/types.h> // for __time_t_defined, but avr libc lacks sys/types.h
 #endif
