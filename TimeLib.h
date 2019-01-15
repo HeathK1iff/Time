@@ -12,17 +12,16 @@
 #define _Time_h
 
 #include <inttypes.h>
-#include "Schedule.h"
 
 #ifndef __AVR__
 #include <sys/types.h> // for __time_t_defined, but avr libc lacks sys/types.h
 #endif
 
-
 #if !defined(__time_t_defined) // avoid conflict with newlib or other posix libc
 typedef unsigned long time_t;
 #endif
 
+#include "Schedule.h"
 
 // This ugly hack allows us to define C++ overloaded functions, when included
 // from within an extern "C", as newlib's sys/stat.h does.  Actually it is

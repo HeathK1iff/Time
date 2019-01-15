@@ -1,15 +1,17 @@
 #ifndef SCHEDULE_H
 #define SCHEDULE_H
 
-#include "Arduino.h"
+#include <stdlib.h>
+#include "TimeLib.h"
 
 typedef void (*TaskHanlder)(int taskId);
 enum TaskTimeUnit {ttuYear, ttuMonth, ttuDay, ttuHour};
+static uint32_t checkInterval = 30000; //msec 
 
 class Schedule {
   protected:
     Schedule* child = NULL;
-    time_t tsSkipTask = 0;
+    time_t tsSkip = 0;
     uint8_t taskId;
     TaskTimeUnit unit = ttuYear;
   public:
@@ -39,10 +41,12 @@ class ScheduleOnTimeTask: public Schedule {
     bool execute(time_t tm);
 };
 
-class Schedulers {
+class Scheduler {
   private:
+    unsigned long tsCheckInterval = 0;
     TaskHanlder taskHandler = NULL;
     Schedule * task_root = NULL;
+	time_t time;
     void addSchedulePeriodTask(time_t from, time_t to, uint8_t taskId, TaskTimeUnit unit);
   public:
     void begin(TaskHanlder handler);
@@ -52,7 +56,9 @@ class Schedulers {
     void addDaySchedule(uint8_t fromDay, uint8_t fromHour, uint8_t fromMin, uint8_t toDay, uint8_t toHour, uint8_t toMin, uint8_t taskId);
     void addMonthSchedule(uint8_t fromMonth, uint8_t fromDay, uint8_t fromHour, uint8_t fromMin, uint8_t toMonth, uint8_t toDay, uint8_t toHour, uint8_t toMin, uint8_t taskId);
 
-    void maitenance(time_t tm);
+    bool isActive(int taskId); 
+
+    void maintenance(time_t time);
 };
 
 #endif
