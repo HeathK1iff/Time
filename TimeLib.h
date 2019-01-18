@@ -153,6 +153,7 @@ time_t endOfMonth(time_t tm);
 time_t startOfYear(time_t tm);
 time_t endOfYear(time_t tm);
 
+char* time2str(char* buf, time_t sec);
 
 } // extern "C++"
 #endif // __cplusplus

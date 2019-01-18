@@ -371,4 +371,10 @@ time_t endOfYear(time_t tm) {
   return startOfYear(tm) + (LEAP_YEAR(tm / SECS_PER_YEAR) ? 366 : 365) * SECS_PER_DAY;
 }
   
-
+char* time2str(char* buf, time_t sec) {
+  tmElements_t dt;
+  breakTime(sec, dt);
+  sprintf(buf, "%02d.%02d.%02d %02d:%02d:%02d", dt.Day, dt.Month,
+          tmYearToCalendar(dt.Year), dt.Hour, dt.Minute, dt.Second);
+  return buf;
+}

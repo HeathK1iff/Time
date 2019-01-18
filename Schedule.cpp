@@ -29,7 +29,7 @@ SchedulePeriodTask::SchedulePeriodTask(time_t from, time_t to, uint8_t taskId, T
 
 bool SchedulePeriodTask::execute(time_t tm) {
   bool result = false;
-  uint32_t utStartPeriod, utEndPeriod = 0;
+  time_t utStartPeriod, utEndPeriod = 0;
 
   switch (unit) {
     case ttuMonth:
@@ -47,14 +47,14 @@ bool SchedulePeriodTask::execute(time_t tm) {
   }
 
   if (from > to) {
-    result = ((tm >= utStartPeriod) && (tm < utStartPeriod + to)) || ((tm >= utStartPeriod + from) && (tm < utEndPeriod));
-    if ((result) && (tsSkip < tm))
+    result = ((tm >= utStartPeriod) && (tm < (utStartPeriod + to))) || ((tm >= (utStartPeriod + from)) && (tm < utEndPeriod));
+    if (result)
         tsSkip = utEndPeriod + from;
 
   } else {
     result = ((tm >= utStartPeriod + from) && (tm < utStartPeriod + to));
-    if ((result) && (tsSkip < tm))
-        tsSkip = utStartPeriod + to;
+    if (result)
+        tsSkip = utStartPeriod + to;   
   }
 
   return result;
@@ -66,7 +66,7 @@ ScheduleOnTimeTask::ScheduleOnTimeTask(time_t time, uint8_t taskId, TaskTimeUnit
 
 bool ScheduleOnTimeTask::execute(time_t tm) {
   bool result = false;
-  uint32_t utStartPeriod = startOfYear(tm);
+  time_t utStartPeriod = startOfYear(tm);
 
   switch (unit) {
     case ttuMonth:

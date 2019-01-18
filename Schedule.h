@@ -6,7 +6,7 @@
 
 typedef void (*TaskHanlder)(int taskId);
 enum TaskTimeUnit {ttuYear, ttuMonth, ttuDay, ttuHour};
-static uint32_t checkInterval = 30000; //msec 
+static uint32_t checkInterval = 10000; //msec 
 
 class Schedule {
   protected:
