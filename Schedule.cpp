@@ -147,7 +147,7 @@ void Scheduler::maintenance(time_t time) {
       taskHandler(task->getTaskId());
     task = task->getChild();
   }
-  tsCheckInterval = this->time + checkInterval;
+  tsCheckInterval = this->time + CHECK_INTERVAL;
 }
 
 bool Scheduler::isActive(int taskId){
